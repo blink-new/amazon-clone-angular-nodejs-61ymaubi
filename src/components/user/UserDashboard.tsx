@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Calendar, MapPin, Clock, Users, Download, QrCode } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
+import BookingCancellation from '../booking/BookingCancellation'
 
 export default function UserDashboard() {
   const [user, setUser] = useState<any>(null)
@@ -287,9 +288,11 @@ Please present this ticket at the venue.
                           </Button>
 
                           {new Date(event.date) > new Date() && (
-                            <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                              Cancel Booking
-                            </Button>
+                            <BookingCancellation
+                              booking={booking}
+                              event={event}
+                              onCancellationComplete={loadUserData}
+                            />
                           )}
                         </div>
                       </div>

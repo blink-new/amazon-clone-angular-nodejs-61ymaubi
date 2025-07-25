@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Ticket, User, ShoppingCart, Settings, BarChart3 } from 'lucide-react'
 import { blink } from '@/blink/client'
+import NotificationCenter from '../notifications/NotificationCenter'
 
 interface HeaderProps {
   cartCount?: number
@@ -59,6 +60,9 @@ export function Header({ cartCount = 0, onCartClick, onNavigate }: HeaderProps) 
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
+            {/* Notifications */}
+            {user && <NotificationCenter />}
+
             {/* Cart */}
             <Button
               variant="ghost"

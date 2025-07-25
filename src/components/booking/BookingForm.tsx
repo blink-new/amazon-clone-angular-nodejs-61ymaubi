@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { CreditCard, Mail, Phone, User } from 'lucide-react'
 import { Event, SeatMap, Booking } from '@/types'
 import { blink } from '@/blink/client'
-import { sendBookingConfirmation } from '../../utils/emailService'
+import { sendBookingConfirmation } from '../../utils/notificationService'
 
 interface BookingFormProps {
   event: Event
