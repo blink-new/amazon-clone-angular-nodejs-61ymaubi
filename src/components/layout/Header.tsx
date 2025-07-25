@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, Ticket, User, ShoppingCart } from 'lucide-react'
+import { Search, Ticket, User, ShoppingCart, Settings, BarChart3 } from 'lucide-react'
 import { blink } from '@/blink/client'
 
 interface HeaderProps {
   cartCount?: number
   onCartClick?: () => void
+  onNavigate?: (page: string) => void
 }
 
-export function Header({ cartCount = 0, onCartClick }: HeaderProps) {
+export function Header({ cartCount = 0, onCartClick, onNavigate }: HeaderProps) {
   const [user, setUser] = useState<any>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -33,10 +34,14 @@ export function Header({ cartCount = 0, onCartClick }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            onClick={() => onNavigate?.('events')}
+            className="flex items-center space-x-2 p-2 hover:bg-transparent"
+          >
             <Ticket className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold text-primary">TicketHub</span>
-          </div>
+          </Button>
 
           {/* Search Bar */}
           <div className="flex-1 max-w-lg mx-8">
@@ -69,13 +74,32 @@ export function Header({ cartCount = 0, onCartClick }: HeaderProps) {
               )}
             </Button>
 
+            {/* Navigation */}
+            {user && (
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigate?.('dashboard')}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  My Bookings
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigate?.('admin')}
+                >
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Admin
+                </Button>
+              </div>
+            )}
+
             {/* User Actions */}
             {user ? (
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="sm">
-                  <User className="h-4 w-4 mr-2" />
-                  {user.email}
-                </Button>
+                <span className="text-sm text-gray-600">{user.email}</span>
                 <Button variant="outline" size="sm" onClick={handleLogout}>
                   Logout
                 </Button>

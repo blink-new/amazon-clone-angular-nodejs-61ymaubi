@@ -4,6 +4,8 @@ import { EventGrid } from '@/components/events/EventGrid'
 import { SeatMap } from '@/components/booking/SeatMap'
 import { BookingForm } from '@/components/booking/BookingForm'
 import { BookingConfirmation } from '@/components/booking/BookingConfirmation'
+import AdminDashboard from './components/admin/AdminDashboard'
+import UserDashboard from './components/user/UserDashboard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,7 +13,7 @@ import { ArrowLeft, Calendar, MapPin, Clock } from 'lucide-react'
 import { Event, SeatMap as SeatMapType, Booking, CartItem } from '@/types'
 import { blink } from '@/blink/client'
 
-type AppState = 'events' | 'seats' | 'booking' | 'confirmation'
+type AppState = 'events' | 'seats' | 'booking' | 'confirmation' | 'admin' | 'dashboard'
 
 function App() {
   const [user, setUser] = useState<any>(null)
@@ -71,6 +73,16 @@ function App() {
     handleBackToEvents()
   }
 
+  const handleNavigate = (page: string) => {
+    if (page === 'events') {
+      setCurrentState('events')
+    } else if (page === 'admin') {
+      setCurrentState('admin')
+    } else if (page === 'dashboard') {
+      setCurrentState('dashboard')
+    }
+  }
+
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
       weekday: 'short',
@@ -120,11 +132,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header cartCount={selectedSeats.length} />
+      <Header cartCount={selectedSeats.length} onNavigate={handleNavigate} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Breadcrumb */}
-        {currentState !== 'events' && (
+        {currentState !== 'events' && currentState !== 'admin' && currentState !== 'dashboard' && (
           <div className="mb-6">
             <Button
               variant="ghost"
@@ -226,6 +238,14 @@ function App() {
             seats={selectedSeats}
             onNewBooking={handleNewBooking}
           />
+        )}
+
+        {currentState === 'admin' && (
+          <AdminDashboard />
+        )}
+
+        {currentState === 'dashboard' && (
+          <UserDashboard />
         )}
       </main>
     </div>

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { CreditCard, Mail, Phone, User } from 'lucide-react'
 import { Event, SeatMap, Booking } from '@/types'
 import { blink } from '@/blink/client'
+import { sendBookingConfirmation } from '../../utils/emailService'
 
 interface BookingFormProps {
   event: Event
@@ -55,10 +56,12 @@ export function BookingForm({ event, selectedSeats, onBookingComplete, onCancel 
         booking_status: 'confirmed',
         payment_status: 'completed',
         payment_method: formData.paymentMethod,
-        email: formData.email,
-        phone: formData.phone,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+        customer_name: formData.fullName,
+        seat_count: selectedSeats.length,
         qr_code: `QR_${bookingReference}`,
-        booking_date: new Date().toISOString()
+        created_at: new Date().toISOString()
       })
 
       // Create booked seats records
@@ -79,6 +82,15 @@ export function BookingForm({ event, selectedSeats, onBookingComplete, onCancel 
       await blink.db.events.update(event.id, {
         available_seats: event.available_seats - selectedSeats.length
       })
+
+      // Send confirmation email
+      try {
+        await sendBookingConfirmation(booking, event)
+        console.log('Booking confirmation email sent successfully')
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError)
+        // Don't fail the booking if email fails
+      }
 
       onBookingComplete(booking)
     } catch (error) {
